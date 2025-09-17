@@ -1,0 +1,115 @@
+spring:
+  application:
+    name: CpeOnlineStatus
+  # devtools工具
+  devtools:
+    restart:
+      # 开启热部署,使热部署生效
+      enabled: true
+  # 资源信息
+  messages:
+    # 国际化资源文件路径
+    basename: i18n/messages
+  servlet:
+    multipart:
+      # 整个请求大小限制
+      max-request-size: 4096MB
+      # 上传单个文件大小限制
+      max-file-size: 4096MB
+  mvc:
+    format:
+      date-time: yyyy-MM-dd HH:mm:ss
+  #jackson配置
+  jackson:
+    # 日期格式化
+    date-format: yyyy-MM-dd HH:mm:ss
+    serialization:
+      # 格式化输出
+      INDENT_OUTPUT: false
+      # 忽略无法转换的对象
+      fail_on_empty_beans: false
+    deserialization:
+      # 允许对象忽略json中不存在的属性
+      fail_on_unknown_properties: false
+  cloud:
+    # sentinel 配置
+    sentinel:
+      # sentinel 开关
+      enabled: true
+      # 取消控制台懒加载
+      eager: true
+      transport:
+        # dashboard控制台服务名 用于服务发现
+        # 如无此配置将默认使用下方 dashboard 配置直接注册
+        server-name: jjys-sentinel-dashboard
+        # 客户端指定注册的ip 用于多网卡ip不稳点使用
+        # client-ip:
+        # 控制台地址 从1.3.0开始使用 server-name 注册
+        # dashboard: localhost:8718
+
+# redis单例通用配置 子服务可以自行配置进行覆盖
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      # 密码(如没有密码请注释掉)
+      password: 123456
+      database: 0
+      timeout: 10s
+      ssl.enabled: false
+
+# redisson 配置
+redisson:
+  # redis key前缀
+  keyPrefix:
+  # 线程池数量
+  threads: 4
+  # Netty线程池数量
+  nettyThreads: 8
+  # 数据有效时间
+  dataValidTime: 1800000
+  # 单节点配置
+  singleServerConfig:
+    # 客户端名称
+    clientName: ${spring.application.name}
+    # 最小空闲连接数
+    connectionMinimumIdleSize: 8
+    # 连接池大小
+    connectionPoolSize: 32
+    # 连接空闲超时，单位：毫秒
+    idleConnectionTimeout: 10000
+    # 命令等待超时，单位：毫秒
+    timeout: 3000
+    # 发布和订阅连接池大小
+    subscriptionConnectionPoolSize: 50
+
+# MyBatisPlus配置
+# https://baomidou.com/config/
+mybatis-plus:
+  # 不支持多包, 如有需要可在注解配置 或 提升扫包等级
+  # 例如 com.**.**.mapper
+  mapperPackage: com.cpeonlinestatus.**.mapper
+  # 对应的 XML 文件位置
+  mapperLocations: classpath*:mapper/*Mapper.xml
+  # 实体扫描，多个package用逗号或者分号分隔
+  typeAliasesPackage: com.cpeonlinestatus.**.bean
+  global-config:
+    dbConfig:
+      # 主键类型
+      # AUTO 自增 NONE 空 INPUT 用户输入 ASSIGN_ID 雪花 ASSIGN_UUID 唯一 UUID
+      # 如需改为自增 需要将数据库表全部设置为自增
+      idType: AUTO
+
+# 数据加密
+mybatis-encryptor:
+  # 是否开启加密
+  enable: false
+  # 默认加密算法
+  algorithm: BASE64
+  # 编码方式 BASE64/HEX。默认BASE64
+  encode: BASE64
+  # 安全秘钥 对称算法的秘钥 如：AES，SM4
+  password:
+  # 公私钥 非对称算法的公私钥 如：SM2，RSA
+  publicKey:
+  privateKey:

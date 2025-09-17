@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jjys.cpeonlinestatus.mapper.DeviceInfoMapper">
+
+    <!-- resultMap用于从SQL查询结果 映射到 实体类 -->
+    <resultMap id="deviceInfoResult" type="com.jjys.cpeonlinestatus.bean.vo.DeviceInfoVo">
+        <id property="id" column="id"/>
+    </resultMap>
+
+    <!-- sql片段 -->
+    <sql id="selectBaseDeviceInfoVo">
+        select d.id,
+               d.model_id,
+               d.company_id,
+               d.device_name,
+               d.device_sn,
+               d.device_esn,
+               d.device_status,
+               d.device_lock_status,
+               d.device_mac
+        from t04_device_info d
+    </sql>
+
+    <sql id="selectDeviceStatus">
+        select d.id,
+               d.device_status,
+               d.last_login_time
+        from t04_device_info d
+    </sql>
+
+    <!--根据sn 查询设备<基本>信息-->
+    <select id="queryBaseBySn" resultMap="deviceInfoResult">
+        <include refid="selectBaseDeviceInfoVo"/>
+        where d.device_sn = #{sn}
+        and d.del_flag = '0'
+    </select>
+
+    <!--以模型modelId+最后上线时间为条件，查询设备(id+在线状态+最后上线时间信息)列表-->
+    <select id="queryDeviceStatusList" resultType="com.jjys.cpeonlinestatus.bean.DeviceInfo">
+        <include refid="selectDeviceStatus"/>
+        where d.device_status = #{deviceStatus}
+        and d.del_flag = '0'
+        <if test="lastLoginTime != null">
+            and d.last_login_time &gt;= #{lastLoginTime}
+        </if>
+    </select>
+
+</mapper>
